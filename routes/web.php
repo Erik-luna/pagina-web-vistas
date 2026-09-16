@@ -127,3 +127,23 @@ Route::get('/crear-admin-nuevo', function () {
 
     return "¡Usuario administrador creado con éxito! Correo: nuevo_admin@correo.com - Contraseña: 12345678";
 });
+Route::get('/ver-usuarios-bd', function () {
+    $className = class_exists(\App\Models\User::class) ? \App\Models\User::class : (\App\Models\Usuario::class ?? null);
+    
+    if (!$className) {
+        return "No se encontró el modelo de usuario.";
+    }
+
+    $usuarios = $className::all();
+    
+    $output = "<h2>Usuarios en la Base de Datos:</h2><ul>";
+    foreach ($usuarios as $u) {
+        $email = $u->email ?? $u->correo ?? 'Sin email';
+        $nombre = $u->nombre ?? $u->name ?? 'Sin nombre';
+        $rol = $u->rol ?? 'Sin rol';
+        $output .= "<li><b>Nombre:</b> {$nombre} | <b>Correo:</b> {$email} | <b>Rol:</b> {$rol}</li>";
+    }
+    $output .= "</ul>";
+    
+    return $output;
+});
