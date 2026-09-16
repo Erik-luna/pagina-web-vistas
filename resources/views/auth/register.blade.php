@@ -56,6 +56,20 @@
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label fw-semibold" style="font-size:.85rem">Tipo de cuenta</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white" style="border-radius:12px 0 0 12px"><i class="fa-solid fa-user-tag" style="color:#bc1888"></i></span>
+                    <select name="rol" class="form-select @error('rol') is-invalid @enderror" style="border-radius:0 12px 12px 0" required>
+                        <option value="cliente" {{ old('rol', 'cliente') === 'cliente' ? 'selected' : '' }}>Cliente</option>
+                        <option value="admin" {{ old('rol') === 'admin' ? 'selected' : '' }}>Administrador</option>
+                    </select>
+                </div>
+                @error('rol')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold" style="font-size:.85rem">Contraseña</label>

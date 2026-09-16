@@ -77,6 +77,7 @@ class AuthController extends Controller
             'nombre' => 'required|string|max:100',
             'email' => 'required|email|max:150|unique:usuarios,email',
             'password' => 'required|string|min:6|confirmed',
+            'rol' => 'required|in:cliente,admin',
             'telefono' => 'nullable|string|max:20',
         ]);
 
@@ -84,7 +85,7 @@ class AuthController extends Controller
             'nombre' => $request->nombre,
             'email' => $request->email,
             'password' => $request->password,
-            'rol' => 'cliente',
+            'rol' => $request->rol,
             'telefono' => $request->telefono,
             'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($request->nombre) . '&background=6366f1&color=fff&size=128',
         ]);
