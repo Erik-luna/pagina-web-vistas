@@ -65,6 +65,11 @@
             <hr class="flex-grow-1">
         </div>
 
+        <a href="{{ route('google.login') }}" class="btn-google" style="display:flex;align-items:center;justify-content:center;gap:.65rem;width:100%;padding:.8rem 1rem;margin-bottom:1.3rem;border:1px solid #d9d9d9;border-radius:14px;background:#fff;color:#3c4043;font-weight:600;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,.08)">
+            <i class="fa-brands fa-google" style="color:#4285F4"></i>
+            Iniciar sesión con Google
+        </a>
+
         <div class="social-circles" style="display:flex;justify-content:center;gap:.8rem;margin-bottom:1.3rem">
             <a href="#" class="social-circle" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;background:#1877F2;text-decoration:none"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="#" class="social-circle" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;background:linear-gradient(45deg,#f09433,#bc1888);text-decoration:none"><i class="fa-brands fa-instagram"></i></a>

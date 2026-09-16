@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         $usuario = Usuario::where('email', $request->email)->where('activo', true)->first();
 
-        if (!$usuario || $request->password !== $usuario->password) {
+        if (!$usuario || !$this->verificarPassword($usuario, $request->password)) {
             return back()->withInput($request->only('email'))->with('error', 'Credenciales incorrectas.');
         }
 
@@ -37,6 +37,30 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('success', "Bienvenido/a, {$usuario->nombre}!");
+    }
+
+    private function verificarPassword(Usuario $usuario, string $password): bool
+    {
+        try {
+            if (Hash::check($password, $usuario->password)) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            // Contraseña almacenada sin formato bcrypt (texto plano).
+        }
+
+        // Compatibilidad con contraseñas guardadas en texto plano. Al acertar
+        // se guarda en bcrypt gracias al cast 'hashed' del modelo.
+        if (hash_equals((string) $usuario->password, (string) $password)) {
+            try {
+                $usuario->password = $password;
+                $usuario->save();
+            } catch (\Throwable $e) {
+                // no bloquea el login
+            }
+            return true;
+        }
+        return false;
     }
 
     public function showRegister()
