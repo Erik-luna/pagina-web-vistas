@@ -16,27 +16,43 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
 
-// ==========================================
-// RUTA TEMPORAL PARA CREAR/ACTUALIZAR ADMIN
-// ==========================================
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/arreglar-admin-secreto', function () {
-    // Busca si ya existe un usuario administrador, o créalo si no hay ninguno
-    $usuario = Usuario::where('rol', 'admin')->first();
-
-    if (!$usuario) {
-        $usuario = new Usuario();
-        $usuario->nombre = 'Administrador';
+    // Detectar automáticamente el modelo o tabla correcta
+    $className = class_exists(\App\Models\User::class) ? \App\Models\User::class : (\App\Models\Usuario::class ?? null);
+    
+    if (!$className) {
+        return "Error: No se encontró el modelo User ni Usuario.";
     }
 
-    $usuario->email = 'admin@gmail.com'; // Cambia esto por tu correo real
-    $usuario->password = Hash::make('12345678'); // Cambia esto por tu contraseña deseada
-    $usuario->rol = 'admin';
-    $usuario->activo = true;
+    // Buscar el primer usuario o crear uno nuevo
+    $usuario = $className::first();
+
+    if (!$usuario) {
+        $usuario = new $className();
+        if (Schema::hasColumn($usuario->getTable(), 'nombre')) {
+            $usuario->nombre = 'Administrador';
+        } else {
+            $usuario->name = 'Administrador';
+        }
+    }
+
+    $emailCol = Schema::hasColumn($usuario->getTable(), 'email') ? 'email' : 'correo';
+    $usuario->{$emailCol} = 'admin@tucorreo.com'; // <-- Pon aquí tu correo
+    $usuario->password = Hash::make('12345678'); // <-- Contraseña temporal
+    
+    if (Schema::hasColumn($usuario->getTable(), 'rol')) {
+        $usuario->rol = 'admin';
+    }
+    if (Schema::hasColumn($usuario->getTable(), 'activo')) {
+        $usuario->activo = true;
+    }
+    
     $usuario->save();
 
-    return "¡Listo! Administrador configurado. Correo: {$usuario->email} - Contraseña: 12345678 (Ya puedes iniciar sesión)";
+    return "¡Éxito! Administrador configurado en la tabla " . $usuario->getTable() . ". Correo: admin@tucorreo.com - Contraseña: 12345678";
 });
 
 // Redirige a Google
