@@ -16,6 +16,29 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
 
+// ==========================================
+// RUTA TEMPORAL PARA CREAR/ACTUALIZAR ADMIN
+// ==========================================
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/arreglar-admin-secreto', function () {
+    // Busca si ya existe un usuario administrador, o créalo si no hay ninguno
+    $usuario = Usuario::where('rol', 'admin')->first();
+
+    if (!$usuario) {
+        $usuario = new Usuario();
+        $usuario->nombre = 'Administrador';
+    }
+
+    $usuario->email = 'admin@gmail.com'; // Cambia esto por tu correo real
+    $usuario->password = Hash::make('12345678'); // Cambia esto por tu contraseña deseada
+    $usuario->rol = 'admin';
+    $usuario->activo = true;
+    $usuario->save();
+
+    return "¡Listo! Administrador configurado. Correo: {$usuario->email} - Contraseña: 12345678 (Ya puedes iniciar sesión)";
+});
+
 // Redirige a Google
 Route::get('auth/google', function () {
     return Socialite::driver('google')->redirect();
